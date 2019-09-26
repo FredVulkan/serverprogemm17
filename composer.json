@@ -1,0 +1,9 @@
+{
+    "name": "root/test",
+    "require": {
+        "altorouter/altorouter": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {"App\\": "app/"}
+    }
+}
