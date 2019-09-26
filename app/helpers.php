@@ -6,5 +6,6 @@ function view($view, $variables = []){
     include(__DIR__ . "/../views/template.php");
 }
 function uri(){
-    return App\DI::$router->getUri();
+    $match = App\DI::$router->match();
+    return $match["name"];
 }

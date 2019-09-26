@@ -51,7 +51,9 @@ class EmployeeController
      * takes input from edit view form and updates info in database
      */
     public function update(){
+
         $employee = Employee::find($_GET['id']);
+
         $employee->fname = $_POST['fname'];
         $employee->lname = $_POST['lname'];
         $employee->phone = intval($_POST['phone']);

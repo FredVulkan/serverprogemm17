@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\DI;
 use PDO;
+use PDOStatement;
 
 class Model
 {
@@ -41,7 +42,7 @@ class Model
         $stmt->execute();
 
         // set the resulting array to associative
-        $result = $stmt->setFetchMode(PDO::FETCH_CLASS, self::class);
+        $result = $stmt->setFetchMode(PDO::FETCH_CLASS, static::class);
         $result = $stmt->fetch();
         return $result;
     }
@@ -75,10 +76,21 @@ class Model
         $fieldNames = array_keys($fields);
         $fieldsValuesString = '';
         foreach ($fieldNames as $name){
-            $fieldsValuesString .= $name . "='" .$this->$name . "', '";
+            $fieldsValuesString .= $name . "='" .$this->$name . "', ";
         }
         $fieldsValuesString = substr($fieldsValuesString, 0, strlen($fieldsValuesString)-2 );
-        $sql = "UPDATE " . self::$tableName . " SET $fieldsValuesString WHERE id=$this->id";
+        $sql = "UPDATE " . static::$tableName . " SET $fieldsValuesString WHERE id=$this->id";
         return $sql;
+    }
+
+    public static function select($where){
+        /** @var PDOStatement $stmt */
+        $stmt = DI::$DB->getConn()->prepare("SELECT * FROM " . static::$tableName . " WHERE $where");
+        $stmt->execute();
+
+        // set the resulting array to associative
+        $result = $stmt->setFetchMode(PDO::FETCH_CLASS, static::class);
+        $result = $stmt->fetch();
+        return $result;
     }
 }
