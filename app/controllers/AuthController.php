@@ -30,6 +30,13 @@ class AuthController
         $user = User::select("email='$email' AND password='$password'");
         if ($user){
             $_SESSION['userId'] = $user->id;
+
+            if($_POST['remember']){
+                $hash = md5(time() . $user->id);
+                setcookie('userId', $hash, time()+3600*24, '/');
+                $user->token = $hash;
+                $user->save();
+            }
             header('Location: /secret');
         }else{
             header('Location: /login');
@@ -38,7 +45,11 @@ class AuthController
     }
 
     public function logout(){
+        $user = User::auth();
+        $user-> token = null;
+        $user->save();
         unset($_SESSION['userId']);
+        setcookie('userId', $hash, time()+3600*24, '/');
         header('Location: /login');
         die();
     }
